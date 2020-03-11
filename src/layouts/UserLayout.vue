@@ -5,7 +5,7 @@
         <div class="header">
           <a href="/">
             <img src="~@/assets/logo.svg" class="logo" alt="logo">
-            <span class="title">Simpo</span>
+            <span class="title">千家万铺</span>
           </a>
         </div>
         <!--        <div class="desc">
@@ -22,7 +22,7 @@
           <a href="_self">条款</a>
         </div>
         <div class="copyright">
-          Copyright &copy; 2019 辛普科技
+          Copyright &copy; 2020 千家万铺
         </div>
       </div>
     </div>

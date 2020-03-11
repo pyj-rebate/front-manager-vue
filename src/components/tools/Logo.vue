@@ -18,7 +18,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: 'Simpo',
+      default: '千家万铺',
       required: false
     },
     showTitle: {

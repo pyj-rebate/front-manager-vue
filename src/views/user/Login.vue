@@ -17,7 +17,7 @@
             <a-input
               size="large"
               type="text"
-              placeholder="账户: simpo"
+              placeholder="账户: xxxx"
               v-decorator="[
                 'username',
                 {rules: [{ required: true, message: '请输入帐户名或邮箱地址' }, { validator: handleUsernameOrEmail }], validateTrigger: 'change'}
