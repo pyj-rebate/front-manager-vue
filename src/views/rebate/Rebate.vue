@@ -1,7 +1,7 @@
 <template>
   <a-card :bordered="false">
     <a-form :form="form">
-      <a-row :gutter="16" align="middle" style="max-width: 1000px;text-align: center;margin: 0 auto;">
+      <a-row :gutter="16" align="middle" style="min-width: 1366px;text-align: center;margin: 0 auto;">
         <a-col :span="24"><h1>销售财务核对</h1></a-col>
         <a-divider dashed />
         <a-col :span="24">
@@ -107,6 +107,127 @@
 <script>
 import { exportExcel, template, importExcel } from '@/api/rebate/rebate'
 import { STable } from '@/components'
+
+/**
+ * 财务显示列
+ * @type {({dataIndex: string, title: string, key: string}|{dataIndex: string, title: string, key: string}|{dataIndex: string, title: string, key: string}|{dataIndex: string, title: string, key: string}|{scopedSlots: {customRender: string}, dataIndex: string, title: string, key: string})[]}
+ */
+const columFinances = [
+  {
+    title: '往来单位编码',
+    dataIndex: 'code',
+    key: 'code'
+  },
+  {
+    title: '往来单位名称',
+    dataIndex: 'name',
+    key: 'name'
+  },
+  {
+    title: '客户',
+    dataIndex: 'type',
+    key: 'type'
+  },
+  {
+    title: '分管人',
+    dataIndex: 'leader',
+    key: 'leader'
+  },
+  {
+    title: '个体工商户',
+    dataIndex: 'companyType',
+    key: 'companyType',
+    scopedSlots: { customRender: 'companyType' }
+  },
+  {
+    title: '营业执照号码',
+    dataIndex: 'businessLicenseNumber',
+    key: 'businessLicenseNumber'
+  },
+  {
+    title: '法定代表人或经营者',
+    dataIndex: 'legalRepresentative',
+    key: 'legalRepresentative'
+  },
+  {
+    title: '许可证号码',
+    dataIndex: 'licenseNo',
+    key: 'licenseNo'
+  },
+  {
+    title: '到期日',
+    dataIndex: 'endTime',
+    key: 'endTime'
+  },
+  {
+    title: '经营范围是否有',
+    dataIndex: 'businessScopeFlag',
+    key: 'businessScopeFlag'
+  },
+  {
+    title: '付款人',
+    dataIndex: 'payer',
+    key: 'payer'
+  },
+  {
+    title: '委托关系',
+    dataIndex: 'clientage',
+    key: 'clientage',
+    scopedSlots: { customRender: 'clientage' }
+  },
+  {
+    title: '委托期限结束',
+    dataIndex: 'proxyEnd',
+    key: 'proxyEnd'
+  },
+  {
+    title: '委托期限开始',
+    dataIndex: 'proxyStart',
+    key: 'proxyStart'
+  },
+  {
+    title: '付款账号',
+    dataIndex: 'paymentAccount',
+    key: 'paymentAccount'
+  },
+  {
+    title: '身份证信息',
+    dataIndex: 'idCard',
+    key: 'idCard'
+  },
+  {
+    title: '身份证期限结束',
+    dataIndex: 'idCardEnd',
+    key: 'idCardEnd'
+  },
+  {
+    title: '身份证期限开始',
+    dataIndex: 'idCardStart',
+    key: 'idCardStart'
+  },
+  {
+    title: '是否确认',
+    dataIndex: 'confirmFlag',
+    key: 'confirmFlag'
+  },
+  {
+    title: '是否开票',
+    dataIndex: 'invoiceFlag',
+    key: 'invoiceFlag',
+    scopedSlots: { customRender: 'invoiceFlag' }
+  },
+  {
+    title: '专票普票电票',
+    dataIndex: 'ticketType',
+    key: 'ticketType',
+    scopedSlots: { customRender: 'ticketType' }
+  },
+  {
+    title: '开户行',
+    dataIndex: 'openingBank',
+    key: 'openingBank'
+  }
+]
 export default {
   name: 'Rebate',
   components: { STable },
@@ -130,20 +251,7 @@ export default {
         })
       },
       // 列表表头
-      columns: [{
-        title: '付款人',
-        dataIndex: 'payer',
-        key: 'payer'
-      }, {
-        title: '付款账号',
-        dataIndex: 'paymentAccount',
-        key: 'paymentAccount'
-      }, {
-        title: '往来单位名称',
-        dataIndex: 'name',
-        key: 'name'
-      }
-      ],
+      columns: columFinances,
       // 列表表头
       columnsSales: [{
         title: '返利收款人',
