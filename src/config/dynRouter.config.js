@@ -6,14 +6,14 @@ import {
   PageView
 } from '@/layouts'
 export const dynRouterMap = [{
-  path: '/manager',
-  name: 'manager',
+  path: '/',
+  name: 'index',
   component: BasicLayout,
   meta: {
     title: '首页',
     static: true
   },
-  redirect: '/auto/completeList',
+  redirect: '/rebate',
   children: [{
     path: '/auto',
     name: 'auto',
