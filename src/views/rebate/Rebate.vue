@@ -29,7 +29,7 @@
             :data="loadData"
             showPagination="true"
             :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-                >
+          >
           </s-table>
         </a-col>
         <a-col :span="24" style="margin-top: 16px">
@@ -214,7 +214,7 @@ export default {
           this.$message.info(res.msg)
         }
       })
-    },
+    }
   }
 }
 </script>

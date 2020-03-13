@@ -103,6 +103,12 @@ module.exports = {
         changeOrigin: true,
         pathRewrite: { '^/api': '' }
       },
+      // rebate服务
+      '/api/rebate': {
+        target: 'http://127.0.0.1:9955',
+        changeOrigin: true,
+        pathRewrite: { '^/api': '' }
+      },
       // demo服务
       '/api/demo': {
         target: 'http://127.0.0.1:67',
