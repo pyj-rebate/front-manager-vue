@@ -55,3 +55,13 @@ export function getDictByType (filedName) {
     params: { 'filedName': filedName }
   })
 }
+export function checkCode (params) {
+  return axios({
+    url: path.rebate + '/finance/checkCode',
+    method: 'GET',
+    // 设置后，业务错误时不会调用弹出全局错误信息
+    headers: { 'check': true },
+    // id=params.id&code=params.code
+    params: params
+  })
+}

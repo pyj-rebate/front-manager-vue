@@ -133,6 +133,7 @@
       :format-date="formatDate"
       :record="recordActive"
       :save="save"
+      :check-code="checkCode"
       :refresh="refresh"
     />
     <edit
@@ -145,6 +146,7 @@
       :get-moment="getMoment"
       :record="recordActive"
       :update="update"
+      :check-code="checkCode"
       :refresh="refresh"
     />
   </a-card>
@@ -153,7 +155,7 @@
 <script>
 
 import { formatDate, getMoment } from '@/utils/common'
-import { del, get, queryList, save, update, getDictByType } from '@/api/finance'
+import { del, get, queryList, save, update, getDictByType, checkCode } from '@/api/finance'
 import { STable } from '@/components'
 import Detail from './components/Detail'
 import Add from './components/Add'
@@ -169,6 +171,8 @@ export default {
   },
   data () {
     return {
+      // 检查工号唯一性
+      checkCode: checkCode,
       // 选中
       selectedRowKeys: [],
       selectedRows: [],

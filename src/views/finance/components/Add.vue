@@ -15,7 +15,7 @@
             :labelCol="{ span: 8 }"
             :wrapperCol="{ span: 16 }">
             <a-input
-              v-decorator="['code',{rules:[{required: true, message: '往来单位编码不能为空'}]}]"
+              v-decorator="['code',{rules:[{required: true, message: '往来单位编码不能为空'},{validator: validatorCheckCode}]}]"
               placeholder="请输入往来单位编码"/>
           </a-form-item>
         </a-col>
@@ -290,6 +290,10 @@ export default {
         return {}
       }
     },
+    checkCode: {
+      type: Function,
+      default: undefined
+    },
     record: {
       type: Object,
       default: function () {
@@ -306,6 +310,17 @@ export default {
   },
   computed: {},
   methods: {
+    validatorCheckCode (rule, value, callback) {
+      const params = { code: this.form.getFieldValue('code') }
+      this.checkCode(params).then(res => {
+        if (res.code !== 10000) {
+          callback(new Error(res.msg))
+        } else if (res.code === 10000 && res.result > 0) {
+          callback(new Error('往来单位编码已存在'))
+        }
+        callback()
+      })
+    },
     show () {
       this.addVisible = true
     },
