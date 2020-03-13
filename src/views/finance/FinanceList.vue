@@ -90,6 +90,7 @@
       :columns="columns"
       :data="loadData"
       showPagination="auto"
+      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
     >
       <span slot="companyType" slot-scope="text">
         {{ getCompanyTypeName(text) }}
@@ -168,6 +169,9 @@ export default {
   },
   data () {
     return {
+      // 选中
+      selectedRowKeys: [],
+      selectedRows: [],
       // 保存方法
       save: save,
       // 修改方法
@@ -404,7 +408,13 @@ export default {
   },
   computed: {},
   methods: {
-
+    /**
+     * 财务选中
+     */
+    onSelectChange (selectedRowKeys, selectedRows) {
+      this.selectedRowKeys = selectedRowKeys
+      this.selectedRows = selectedRows
+    },
     getCompanyTypeName (key) {
       let value = ''
       this.selectCompanyType.forEach(item => {
