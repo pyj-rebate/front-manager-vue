@@ -167,22 +167,12 @@
         </a-col>
         <a-col :lg="12" :md="24">
           <a-form-item
-            label="身份证期限开始"
+            label="身份证期限"
             :labelCol="{ span: 8 }"
             :wrapperCol="{ span: 16 }">
-            <a-date-picker
-              v-decorator="['idCardStart',{}]"
-              placeholder="请选择身份证期限开始"/>
-          </a-form-item>
-        </a-col>
-        <a-col :lg="12" :md="24">
-          <a-form-item
-            label="身份证期限结束"
-            :labelCol="{ span: 8 }"
-            :wrapperCol="{ span: 16 }">
-            <a-date-picker
-              v-decorator="['idCardEnd',{}]"
-              placeholder="请选择身份证期限结束"/>
+            <a-input
+              v-decorator="['idCardLimit',{}]"
+              placeholder="请选择身份证期限"/>
           </a-form-item>
         </a-col>
         <a-col :lg="12" :md="24">
@@ -336,8 +326,6 @@ export default {
           values.endtime = this.formatDate(values.endtime, 'YYYY-MM-DD 00:00:00')
           values.proxyEnd = this.formatDate(values.proxyEnd, 'YYYY-MM-DD 00:00:00')
           values.proxyStart = this.formatDate(values.proxyStart, 'YYYY-MM-DD 00:00:00')
-          values.idCardEnd = this.formatDate(values.idCardEnd, 'YYYY-MM-DD 00:00:00')
-          values.idCardStart = this.formatDate(values.idCardStart, 'YYYY-MM-DD 00:00:00')
           values.addTime = this.formatDate(values.addTime, 'YYYY-MM-DD 00:00:00')
           values.updTime = this.formatDate(values.updTime, 'YYYY-MM-DD 00:00:00')
           this.save(values).then(res => {

@@ -267,14 +267,9 @@ export default {
           key: 'idCard'
         },
         {
-          title: '身份证期限结束',
-          dataIndex: 'idCardEnd',
-          key: 'idCardEnd'
-        },
-        {
-          title: '身份证期限开始',
-          dataIndex: 'idCardStart',
-          key: 'idCardStart'
+          title: '身份证期限',
+          dataIndex: 'idCardLimit',
+          key: 'idCardLimit'
         },
         {
           title: '是否确认',
@@ -324,26 +319,6 @@ export default {
           this.queryParam.proxyStartSearch = []
           this.queryParam.proxyStartSearch[0] = formatDate(this.queryParam.proxyStartCondition[0], 'YYYY-MM-DD')
           this.queryParam.proxyStartSearch[1] = formatDate(this.queryParam.proxyStartCondition[1], 'YYYY-MM-DD')
-        }
-        if (this.queryParam.idCardEndCondition) {
-          this.queryParam.idCardEndSearch = []
-          this.queryParam.idCardEndSearch[0] = formatDate(this.queryParam.idCardEndCondition[0], 'YYYY-MM-DD')
-          this.queryParam.idCardEndSearch[1] = formatDate(this.queryParam.idCardEndCondition[1], 'YYYY-MM-DD')
-        }
-        if (this.queryParam.idCardStartCondition) {
-          this.queryParam.idCardStartSearch = []
-          this.queryParam.idCardStartSearch[0] = formatDate(this.queryParam.idCardStartCondition[0], 'YYYY-MM-DD')
-          this.queryParam.idCardStartSearch[1] = formatDate(this.queryParam.idCardStartCondition[1], 'YYYY-MM-DD')
-        }
-        if (this.queryParam.addTimeCondition) {
-          this.queryParam.addTimeSearch = []
-          this.queryParam.addTimeSearch[0] = formatDate(this.queryParam.addTimeCondition[0], 'YYYY-MM-DD')
-          this.queryParam.addTimeSearch[1] = formatDate(this.queryParam.addTimeCondition[1], 'YYYY-MM-DD')
-        }
-        if (this.queryParam.updTimeCondition) {
-          this.queryParam.updTimeSearch = []
-          this.queryParam.updTimeSearch[0] = formatDate(this.queryParam.updTimeCondition[0], 'YYYY-MM-DD')
-          this.queryParam.updTimeSearch[1] = formatDate(this.queryParam.updTimeCondition[1], 'YYYY-MM-DD')
         }
         return queryList(Object.assign(parameter, this.queryParam))
           .then(res => {

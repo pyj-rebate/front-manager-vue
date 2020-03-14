@@ -29,3 +29,16 @@ export function importExcel (file) {
     data: data
   })
 }
+
+// 导入excel
+export function importFinancesExcel (file) {
+  const data = new FormData()
+  data.append('file', file)
+  return axios({
+    url: path.rebate + '/finance/importFinances',
+    method: 'POST',
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 1800000,
+    data: data
+  })
+}

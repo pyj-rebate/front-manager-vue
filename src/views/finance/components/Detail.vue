@@ -20,7 +20,8 @@
         <span class="detail-label">分管人</span><span class="detail-content">{{ record.leader }}</span>
       </a-col>
       <a-col :lg="12" :md="24">
-        <span class="detail-label">个体工商户</span><span class="detail-content">{{ getCompanyTypeName(record.companyType) }}</span>
+        <span class="detail-label">个体工商户</span><span
+          class="detail-content">{{ getCompanyTypeName(record.companyType) }}</span>
       </a-col>
       <a-col :lg="12" :md="24">
         <span class="detail-label">营业执照号码</span><span class="detail-content">{{ record.businessLicenseNumber }}</span>
@@ -32,7 +33,8 @@
         <span class="detail-label">许可证号码</span><span class="detail-content">{{ record.licenseNo }}</span>
       </a-col>
       <a-col :lg="12" :md="24">
-        <span class="detail-label">到期日</span><span class="detail-content">{{ formatDate(record.endtime,'YYYY-MM-DD') }}</span>
+        <span class="detail-label">到期日</span><span
+          class="detail-content">{{ formatDate(record.endtime,'YYYY-MM-DD') }}</span>
       </a-col>
       <a-col :lg="12" :md="24">
         <span class="detail-label">经营范围是否有</span><span class="detail-content">{{ record.businessScopeFlag }}</span>
@@ -41,7 +43,8 @@
         <span class="detail-label">付款人</span><span class="detail-content">{{ record.payer }}</span>
       </a-col>
       <a-col :lg="12" :md="24">
-        <span class="detail-label">委托关系</span><span class="detail-content">{{ getClientageName(record.clientage) }}</span>
+        <span class="detail-label">委托关系</span><span
+          class="detail-content">{{ getClientageName(record.clientage) }}</span>
       </a-col>
       <a-col :lg="12" :md="24">
         <span class="detail-label">委托期限开始</span><span class="detail-content">{{ formatDate(record.proxyStart,'YYYY-MM-DD') }}</span>
@@ -56,19 +59,20 @@
         <span class="detail-label">身份证信息</span><span class="detail-content">{{ record.idCard }}</span>
       </a-col>
       <a-col :lg="12" :md="24">
-        <span class="detail-label">身份证期限开始</span><span class="detail-content">{{ formatDate(record.idCardStart,'YYYY-MM-DD') }}</span>
+        <span class="detail-label">身份证期限</span><span class="detail-content">{{ record.idCardLimit }}</span>
       </a-col>
       <a-col :lg="12" :md="24">
-        <span class="detail-label">身份证期限结束</span><span class="detail-content">{{ formatDate(record.idCardEnd,'YYYY-MM-DD') }}</span>
       </a-col>
       <a-col :lg="12" :md="24">
         <span class="detail-label">是否确认</span><span class="detail-content">{{ record.confirmFlag }}</span>
       </a-col>
       <a-col :lg="12" :md="24">
-        <span class="detail-label">是否开票</span><span class="detail-content">{{ getInvoiceFlagName(record.invoiceFlag) }}</span>
+        <span class="detail-label">是否开票</span><span
+          class="detail-content">{{ getInvoiceFlagName(record.invoiceFlag) }}</span>
       </a-col>
       <a-col :lg="12" :md="24">
-        <span class="detail-label">专票普票电票</span><span class="detail-content">{{ getTicketTypeName(record.ticketType) }}</span>
+        <span class="detail-label">专票普票电票</span><span
+          class="detail-content">{{ getTicketTypeName(record.ticketType) }}</span>
       </a-col>
       <a-col :lg="12" :md="24">
         <span class="detail-label">开户行</span><span class="detail-content">{{ record.openingBank }}</span>
@@ -143,5 +147,12 @@ export default {
 </script>
 
 <style scoped>
+  /deep/ .detail-label {
+    width: 120px;
+  }
 
+  /deep/ .detail-content {
+    left: 120px;
+    width: calc(100% - 120px);
+  }
 </style>

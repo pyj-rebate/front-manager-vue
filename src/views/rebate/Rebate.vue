@@ -16,8 +16,9 @@
               :customRequest="handleFinanceImport"
             >
               <a-button :icon="financeLoading ? 'loading' : 'upload'" >导入财务表</a-button>
-              <a style="margin-left: 8px">从原始表选择</a>
             </a-upload>
+            <a style="margin-left: 16px;float:left;">从原始表选择</a>
+            <a style="margin-left: 16px;float:left;color: red;">清空选择</a>
           </a-form-item>
         </a-col>
         <a-col :span="24">
@@ -26,10 +27,16 @@
             size="default"
             :rowKey="(recordActive) => recordActive.id"
             :columns="columns"
-            :data="loadData"
+            :data="loadCheckedFinancesData"
             showPagination="true"
-            :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
           >
+            <span slot="action" slot-scope="text, record">
+              <template>
+                <a-popconfirm title="您确认删除吗?" @confirm="handleDelete(record.id)" okText="确认" cancelText="取消">
+                  <a href="javascript:void(0)">删除</a>
+                </a-popconfirm>
+              </template>
+            </span>
           </s-table>
         </a-col>
         <a-col :span="24" style="margin-top: 16px">
@@ -53,7 +60,7 @@
             size="default"
             :rowKey="(recordActive) => recordActive.id"
             :columns="columnsSales"
-            :data="loadData"
+            :data="loadSalesData"
             showPagination="false"
             :rowSelection="{ selectedRowKeys: selectedRowKeysSales, onChange: onSelectChangeSales }"
           >
@@ -86,7 +93,7 @@
             size="default"
             :rowKey="(recordActive) => recordActive.id"
             :columns="columnsSales"
-            :data="loadData"
+            :data="loadErrorSalesData"
             showPagination="false"
           >
           </s-table>
@@ -105,12 +112,11 @@
 </template>
 
 <script>
-import { exportExcel, template, importExcel } from '@/api/rebate/rebate'
+import { importFinancesExcel, exportExcel, template, importExcel } from '@/api/rebate/rebate'
 import { STable } from '@/components'
 
 /**
  * 财务显示列
- * @type {({dataIndex: string, title: string, key: string}|{dataIndex: string, title: string, key: string}|{dataIndex: string, title: string, key: string}|{dataIndex: string, title: string, key: string}|{scopedSlots: {customRender: string}, dataIndex: string, title: string, key: string})[]}
  */
 const columFinances = [
   {
@@ -196,14 +202,9 @@ const columFinances = [
     key: 'idCard'
   },
   {
-    title: '身份证期限结束',
-    dataIndex: 'idCardEnd',
-    key: 'idCardEnd'
-  },
-  {
-    title: '身份证期限开始',
-    dataIndex: 'idCardStart',
-    key: 'idCardStart'
+    title: '身份证期限',
+    dataIndex: 'idCardLimit',
+    key: 'idCardLimit'
   },
   {
     title: '是否确认',
@@ -226,6 +227,12 @@ const columFinances = [
     title: '开户行',
     dataIndex: 'openingBank',
     key: 'openingBank'
+  },
+  {
+    title: '操作',
+    dataIndex: 'action',
+    width: '320px',
+    scopedSlots: { customRender: 'action' }
   }
 ]
 export default {
@@ -239,13 +246,28 @@ export default {
       saleLoading: false,
       // 单个记录行
       recordActive: {},
+      checkedFinances: [],
+      salesData: [],
+      errorSalesData: [],
       // 选中
       selectedRowKeys: [],
       selectedRows: [],
       selectedRowKeysSales: [],
       selectedRowsSales: [],
-      loadData: parameter => {
-        const initData = []
+      loadCheckedFinancesData: parameter => {
+        const initData = this.checkedFinances
+        return new Promise(function (resolve) {
+          resolve(initData)
+        })
+      },
+      loadSalesData: parameter => {
+        const initData = this.salesData
+        return new Promise(function (resolve) {
+          resolve(initData)
+        })
+      },
+      loadErrorSalesData: parameter => {
+        const initData = this.errorSalesData
         return new Promise(function (resolve) {
           resolve(initData)
         })
@@ -273,7 +295,13 @@ export default {
       ]
     }
   },
+  watch: {
+  },
   methods: {
+    // 删除记录
+    handleDelete (id) {
+
+    },
     /**
      * 重置
      */
@@ -299,19 +327,37 @@ export default {
      */
     handleSaleImport (data) {
     },
+    /* 创建多行vnode */
+    createMsg (messages) {
+      const msgNodes = messages.split('<br/>').map(msg => {
+        return this.$createElement('p', msg)
+      })
+      const multiMsg = this.$createElement('p', { style: { textAlign: 'left' } }, msgNodes)
+      return multiMsg
+    },
     /**
      * 导入财务表
      */
     handleFinanceImport (data) {
       this.financeLoading = true
-      importExcel(data.file).then(res => {
+      importFinancesExcel(data.file).then(res => {
         if (res.code === 10000) {
-          this.$message.info(this.createMsg(res.result))
+          this.$message.info(this.createMsg(res.msg))
+          this.checkedFinances = res.result
+          this.refreshFinance()
         }
       }).finally(() => {
         this.financeLoading = false
-        this.refresh()
       })
+    },
+    refreshFinance () {
+      this.$refs.financeTable.refresh()
+    },
+    refreshSales () {
+      this.$refs.saleTable.refresh()
+    },
+    refreshErrorSales () {
+      this.$refs.errorTable.refresh()
     },
     /**
      * 导出
