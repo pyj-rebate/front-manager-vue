@@ -1,161 +1,190 @@
 <template>
-  <a-card :bordered="false">
-    <div>
-      <div class="table-page-search-wrapper">
-        <a-form layout="inline">
-          <a-row :gutter="48">
-            <a-col :md="8" :sm="12" :xs="24">
-              <a-form-item label="往来单位编码">
-                <a-input v-model="queryParam.code" placeholder="请输入往来单位编码"/>
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="12" :xs="24">
-              <a-form-item label="往来单位名称">
-                <a-input v-model="queryParam.name" placeholder="请输入往来单位名称"/>
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="12" :xs="24">
-              <a-form-item label="分管人">
-                <a-input v-model="queryParam.leader" placeholder="请输入分管人"/>
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="12" :xs="24">
-              <a-form-item label="个体工商户">
-                <a-select :options="companyType" v-model="queryParam.companyType" placeholder="全部"/>
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="12" :xs="24">
-              <a-form-item
-                label="到期日">
-                <a-range-picker v-model="queryParam.endtimeCondition"/>
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="12" :xs="24">
-              <a-form-item label="付款人">
-                <a-input v-model="queryParam.payer" placeholder="请输入付款人"/>
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="12" :xs="24">
-              <a-form-item label="委托关系">
-                <a-select :options="clientage" v-model="queryParam.clientage" placeholder="全部"/>
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="12" :xs="24">
-              <a-form-item
-                label="委托期限开始">
-                <a-range-picker v-model="queryParam.proxyStartCondition"/>
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="12" :xs="24">
-              <a-form-item
-                label="委托期限结束">
-                <a-range-picker v-model="queryParam.proxyEndCondition"/>
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="12" :xs="24">
-              <a-form-item label="付款账号">
-                <a-input v-model="queryParam.paymentAccount" placeholder="请输入付款账号"/>
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="12" :xs="24">
-              <a-form-item label="是否开票">
-                <a-select :options="invoiceFlag" v-model="queryParam.invoiceFlag" placeholder="全部"/>
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="12" :xs="24">
-              <a-form-item label="专票普票电票">
-                <a-select :options="ticketType" v-model="queryParam.ticketType" placeholder="全部"/>
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="12" :xs="24">
-              <span
-                class="table-page-search-submitButtons">
-                <a-button type="primary" @click="$refs.financeTable.refresh(true)">查询</a-button>
-                <a-button style="margin-left: 8px" @click="restQuery()">重置</a-button>
-              </span>
-            </a-col>
-          </a-row>
-        </a-form>
-      </div>
+  <a-drawer
+    wrapClassName="custom-drawer custom-drawer-9"
+    :maskClosable="false"
+    title="选择财务记录"
+    @close="onClose"
+    :visible="listVisible"
+    :wrapStyle="{height: 'calc(100% - 108px)',overflow: 'auto',paddingBottom: '108px'}"
+  >
+    <a-card :bordered="false">
+      <div>
+        <div class="table-page-search-wrapper">
+          <a-form layout="inline">
+            <a-row :gutter="48">
+              <a-col :md="8" :sm="12" :xs="24">
+                <a-form-item label="往来单位编码">
+                  <a-input v-model="queryParam.code" placeholder="请输入往来单位编码"/>
+                </a-form-item>
+              </a-col>
+              <a-col :md="8" :sm="12" :xs="24">
+                <a-form-item label="往来单位名称">
+                  <a-input v-model="queryParam.name" placeholder="请输入往来单位名称"/>
+                </a-form-item>
+              </a-col>
+              <a-col :md="8" :sm="12" :xs="24">
+                <a-form-item label="分管人">
+                  <a-input v-model="queryParam.leader" placeholder="请输入分管人"/>
+                </a-form-item>
+              </a-col>
+              <a-col :md="8" :sm="12" :xs="24">
+                <a-form-item label="个体工商户">
+                  <a-select :options="companyType" v-model="queryParam.companyType" placeholder="全部"/>
+                </a-form-item>
+              </a-col>
+              <a-col :md="8" :sm="12" :xs="24">
+                <a-form-item
+                  label="到期日">
+                  <a-range-picker v-model="queryParam.endtimeCondition"/>
+                </a-form-item>
+              </a-col>
+              <a-col :md="8" :sm="12" :xs="24">
+                <a-form-item label="付款人">
+                  <a-input v-model="queryParam.payer" placeholder="请输入付款人"/>
+                </a-form-item>
+              </a-col>
+              <a-col :md="8" :sm="12" :xs="24">
+                <a-form-item label="委托关系">
+                  <a-select :options="clientage" v-model="queryParam.clientage" placeholder="全部"/>
+                </a-form-item>
+              </a-col>
+              <a-col :md="8" :sm="12" :xs="24">
+                <a-form-item
+                  label="委托期限开始">
+                  <a-range-picker v-model="queryParam.proxyStartCondition"/>
+                </a-form-item>
+              </a-col>
+              <a-col :md="8" :sm="12" :xs="24">
+                <a-form-item
+                  label="委托期限结束">
+                  <a-range-picker v-model="queryParam.proxyEndCondition"/>
+                </a-form-item>
+              </a-col>
+              <a-col :md="8" :sm="12" :xs="24">
+                <a-form-item label="付款账号">
+                  <a-input v-model="queryParam.paymentAccount" placeholder="请输入付款账号"/>
+                </a-form-item>
+              </a-col>
+              <a-col :md="8" :sm="12" :xs="24">
+                <a-form-item label="是否开票">
+                  <a-select :options="invoiceFlag" v-model="queryParam.invoiceFlag" placeholder="全部"/>
+                </a-form-item>
+              </a-col>
+              <a-col :md="8" :sm="12" :xs="24">
+                <a-form-item label="专票普票电票">
+                  <a-select :options="ticketType" v-model="queryParam.ticketType" placeholder="全部"/>
+                </a-form-item>
+              </a-col>
+              <a-col :md="8" :sm="12" :xs="24">
+                <span
+                  class="table-page-search-submitButtons">
+                  <a-button type="primary" @click="$refs.financeTable.refresh(true)">查询</a-button>
+                  <a-button style="margin-left: 8px" @click="restQuery()">重置</a-button>
+                </span>
+              </a-col>
+            </a-row>
+          </a-form>
+        </div>
 
-      <div class="table-operator">
-        <a-button type="primary" icon="plus" @click="handleAdd()">新建</a-button>
+        <div class="table-operator">
+          <a-button type="primary" icon="plus" @click="handleAdd()">新建</a-button>
 
+        </div>
       </div>
-    </div>
-    <s-table
-      ref="financeTable"
-      size="default"
-      :rowKey="(recordActive) => recordActive.id"
-      :columns="columns"
-      :data="loadData"
-      showPagination="auto"
-      :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+      <s-table
+        ref="financeTable"
+        size="default"
+        :rowKey="(recordActive) => recordActive.id"
+        :columns="columns"
+        :data="loadData"
+        showPagination="auto"
+        :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+      >
+        <span slot="companyType" slot-scope="text">
+          {{ getCompanyTypeName(text) }}
+        </span>
+        <span slot="clientage" slot-scope="text">
+          {{ getClientageName(text) }}
+        </span>
+        <span slot="invoiceFlag" slot-scope="text">
+          {{ getInvoiceFlagName(text) }}
+        </span>
+        <span slot="ticketType" slot-scope="text">
+          {{ getTicketTypeName(text) }}
+        </span>
+        <span slot="action" slot-scope="text, record">
+          <template>
+            <a @click="handleDetail(record)">详情</a>
+            <a-divider type="vertical"/>
+            <a @click="handleUpdate(record)">修改</a>
+            <a-divider type="vertical"/>
+            <a-popconfirm title="您确认删除吗?" @confirm="handleDelete([record])" okText="确认" cancelText="取消">
+              <a href="javascript:void(0)">删除</a>
+            </a-popconfirm>
+          </template>
+        </span>
+      </s-table>
+      <detail
+        ref="financeDetail"
+        :format-date="formatDate"
+        :get-company-type-name="getCompanyTypeName"
+        :get-clientage-name="getClientageName"
+        :get-invoice-flag-name="getInvoiceFlagName"
+        :get-ticket-type-name="getTicketTypeName"
+        :record="recordActive"/>
+      <add
+        ref="financeAdd"
+        :companyType="selectCompanyType"
+        :clientage="selectClientage"
+        :invoiceFlag="selectInvoiceFlag"
+        :ticketType="selectTicketType"
+        :format-date="formatDate"
+        :record="recordActive"
+        :save="save"
+        :check-code="checkCode"
+        :refresh="refresh"
+      />
+      <edit
+        ref="financeEdit"
+        :companyType="selectCompanyType"
+        :clientage="selectClientage"
+        :invoiceFlag="selectInvoiceFlag"
+        :ticketType="selectTicketType"
+        :format-date="formatDate"
+        :get-moment="getMoment"
+        :record="recordActive"
+        :update="update"
+        :check-code="checkCode"
+        :refresh="refresh"
+      />
+    </a-card>
+    <div
+      :style="{
+        position: 'absolute',
+        left: 0,
+        bottom: 0,
+        width: '100%',
+        borderTop: '1px solid #e9e9e9',
+        padding: '10px 16px',
+        background: '#fff',
+        textAlign: 'right',
+      }"
     >
-      <span slot="companyType" slot-scope="text">
-        {{ getCompanyTypeName(text) }}
-      </span>
-      <span slot="clientage" slot-scope="text">
-        {{ getClientageName(text) }}
-      </span>
-      <span slot="invoiceFlag" slot-scope="text">
-        {{ getInvoiceFlagName(text) }}
-      </span>
-      <span slot="ticketType" slot-scope="text">
-        {{ getTicketTypeName(text) }}
-      </span>
-      <span slot="action" slot-scope="text, record">
-        <template>
-          <a @click="handleDetail(record)">详情</a>
-          <a-divider type="vertical"/>
-          <a @click="handleUpdate(record)">修改</a>
-          <a-divider type="vertical"/>
-          <a-popconfirm title="您确认删除吗?" @confirm="handleDelete([record])" okText="确认" cancelText="取消">
-            <a href="javascript:void(0)">删除</a>
-          </a-popconfirm>
-        </template>
-      </span>
-    </s-table>
-    <detail
-      ref="financeDetail"
-      :format-date="formatDate"
-      :get-company-type-name="getCompanyTypeName"
-      :get-clientage-name="getClientageName"
-      :get-invoice-flag-name="getInvoiceFlagName"
-      :get-ticket-type-name="getTicketTypeName"
-      :record="recordActive"/>
-    <add
-      ref="financeAdd"
-      :companyType="selectCompanyType"
-      :clientage="selectClientage"
-      :invoiceFlag="selectInvoiceFlag"
-      :ticketType="selectTicketType"
-      :format-date="formatDate"
-      :record="recordActive"
-      :save="save"
-      :check-code="checkCode"
-      :refresh="refresh"
-    />
-    <edit
-      ref="financeEdit"
-      :companyType="selectCompanyType"
-      :clientage="selectClientage"
-      :invoiceFlag="selectInvoiceFlag"
-      :ticketType="selectTicketType"
-      :format-date="formatDate"
-      :get-moment="getMoment"
-      :record="recordActive"
-      :update="update"
-      :check-code="checkCode"
-      :refresh="refresh"
-    />
-  </a-card>
+      <a-button
+        :style="{marginRight: '8px'}"
+        @click="onClose"
+      >
+        取消
+      </a-button>
+      <a-button @click="pickCherry" type="primary">确定</a-button>
+    </div>
+  </a-drawer>
 </template>
 
 <script>
 
 import { formatDate, getMoment } from '@/utils/common'
-import { del, get, queryList, save, update, getDictByType, checkCode } from '@/api/finance'
+import { checkCode, del, get, getDictByType, queryList, save, update } from '@/api/finance'
 import { STable } from '@/components'
 import Detail from './components/Detail'
 import Add from './components/Add'
@@ -171,6 +200,7 @@ export default {
   },
   data () {
     return {
+      listVisible: false,
       // 检查工号唯一性
       checkCode: checkCode,
       // 选中
@@ -387,9 +417,18 @@ export default {
   },
   computed: {},
   methods: {
+
+    show () {
+      this.listVisible = true
+    },
+    onClose () {
+      this.listVisible = false
+      this.selectedRowKeys = []
+      this.selectedRows = []
+    },
     /**
-     * 财务选中
-     */
+       * 财务选中
+       */
     onSelectChange (selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
       this.selectedRows = selectedRows
@@ -475,15 +514,21 @@ export default {
           this.refresh()
         }
       })
+    },
+    /**
+     * 选中记录回显
+     */
+    pickCherry () {
+      this.onClose()
     }
   }
 }
 </script>
 <style scoped lang="less">
-   /deep/ .ant-form-item{
-     .ant-form-item-label{
-       width: 150px !important;
-     }
+  /deep/ .ant-form-item {
+    .ant-form-item-label {
+      width: 150px !important;
+    }
 
-}
+  }
 </style>

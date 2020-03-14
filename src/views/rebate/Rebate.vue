@@ -17,7 +17,7 @@
             >
               <a-button :icon="financeLoading ? 'loading' : 'upload'" >导入财务表</a-button>
             </a-upload>
-            <a style="margin-left: 16px;float:left;">从原始表选择</a>
+            <a style="margin-left: 16px;float:left;" @click="showList">从原始表选择</a>
             <a style="margin-left: 16px;float:left;color: red;">清空选择</a>
           </a-form-item>
         </a-col>
@@ -108,12 +108,14 @@
         </a-col>
       </a-row>
     </a-form>
+    <finance-list ref="financeList"/>
   </a-card>
 </template>
 
 <script>
-import { importFinancesExcel, exportExcel, template, importExcel } from '@/api/rebate/rebate'
+import { importFinancesExcel, exportExcel } from '@/api/rebate/rebate'
 import { STable } from '@/components'
+import FinanceList from '../finance/FinanceList'
 
 /**
  * 财务显示列
@@ -237,7 +239,7 @@ const columFinances = [
 ]
 export default {
   name: 'Rebate',
-  components: { STable },
+  components: { STable, FinanceList },
   data () {
     return {
       form: this.$form.createForm(this),
@@ -298,6 +300,9 @@ export default {
   watch: {
   },
   methods: {
+    showList () {
+      this.$refs.financeList.show()
+    },
     // 删除记录
     handleDelete (id) {
 
