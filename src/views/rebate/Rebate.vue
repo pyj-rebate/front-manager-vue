@@ -18,7 +18,7 @@
               <a-button :icon="financeLoading ? 'loading' : 'upload'" >导入财务表</a-button>
             </a-upload>
             <a style="margin-left: 16px;float:left;" @click="showList">从原始表选择</a>
-            <a style="margin-left: 16px;float:left;color: red;">清空选择</a>
+            <a style="margin-left: 16px;float:left;color: red;" @click="clearFinanceAll">清空选择</a>
           </a-form-item>
         </a-col>
         <a-col :span="24">
@@ -319,12 +319,20 @@ export default {
       }
       return false
     },
+    clearFinanceAll () {
+      this.checkedFinances = []
+      this.refreshFinance()
+    },
     showList () {
       this.$refs.financeList.show(this.checkedFinances)
     },
     // 删除记录
-    handleDelete (id) {
-
+    handleDelete (code) {
+      const index = this.checkedFinances.findIndex(item => item.code === code)
+      if (index > -1) {
+        this.checkedFinances.splice(index, 1)
+        this.refreshFinance()
+      }
     },
     /**
      * 重置
