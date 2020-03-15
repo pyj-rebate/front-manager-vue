@@ -94,11 +94,11 @@
       <s-table
         ref="financeTable"
         size="default"
-        :rowKey="(recordActive) => recordActive.id"
+        :rowKey="(recordActive) => recordActive.code"
         :columns="columns"
         :data="loadData"
         showPagination="auto"
-        :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+        :rowSelection="{ selectedRowKeys: selectedRowKeys, onSelect: onSelectChange, onSelectAll: onSelectAll }"
       >
         <span slot="companyType" slot-scope="text">
           {{ getCompanyTypeName(text) }}
@@ -197,6 +197,14 @@ export default {
     Detail,
     Add,
     Edit
+  },
+  props: {
+    addFinanceList: {
+      type: Function,
+      default: function (array) {
+
+      }
+    }
   },
   data () {
     return {
@@ -418,20 +426,58 @@ export default {
   computed: {},
   methods: {
 
-    show () {
+    show (checkedFinances) {
       this.listVisible = true
+      const selectedRowKeys = []
+      const selectedRows = []
+      checkedFinances.forEach(item => {
+        selectedRowKeys.push(item.code)
+        selectedRows.push(item)
+      })
+      this.selectedRowKeys = selectedRowKeys
+      this.selectedRows = selectedRows
     },
     onClose () {
       this.listVisible = false
       this.selectedRowKeys = []
       this.selectedRows = []
     },
+    onSelectAll (selected, selectedRows, changeRows) {
+      if (selected) {
+        changeRows.forEach(item => {
+          this.selectedRowKeys.push(item.code)
+          this.selectedRows.push(item)
+        })
+      } else {
+        changeRows.forEach(item => {
+          const index = this.selectedRowKeys.findIndex(i => i === item.code)
+          if (index > -1) {
+            this.selectedRowKeys.splice(index, 1)
+          }
+          const _index = this.selectedRows.findIndex(i => i.code === item.code)
+          if (_index > -1) {
+            this.selectedRows.splice(_index, 1)
+          }
+        })
+      }
+    },
     /**
        * 财务选中
        */
-    onSelectChange (selectedRowKeys, selectedRows) {
-      this.selectedRowKeys = selectedRowKeys
-      this.selectedRows = selectedRows
+    onSelectChange (record, selected, selectedRows, nativeEvent) {
+      if (selected) {
+        this.selectedRowKeys.push(record.code)
+        this.selectedRows.push(record)
+      } else {
+        const index = this.selectedRowKeys.findIndex(item => item === record.code)
+        if (index > -1) {
+          this.selectedRowKeys.splice(index, 1)
+        }
+        const _index = this.selectedRows.findIndex(item => item.code === record.code)
+        if (_index > -1) {
+          this.selectedRows.splice(_index, 1)
+        }
+      }
     },
     getCompanyTypeName (key) {
       let value = ''
@@ -519,6 +565,7 @@ export default {
      * 选中记录回显
      */
     pickCherry () {
+      this.addFinanceList(Object.assign([], this.selectedRows))
       this.onClose()
     }
   }

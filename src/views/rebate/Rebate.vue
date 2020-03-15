@@ -25,14 +25,14 @@
           <s-table
             ref="financeTable"
             size="default"
-            :rowKey="(recordActive) => recordActive.id"
+            :rowKey="(recordActive) => recordActive.code"
             :columns="columns"
             :data="loadCheckedFinancesData"
             showPagination="true"
           >
             <span slot="action" slot-scope="text, record">
               <template>
-                <a-popconfirm title="您确认删除吗?" @confirm="handleDelete(record.id)" okText="确认" cancelText="取消">
+                <a-popconfirm title="您确认删除吗?" @confirm="handleDelete(record.code)" okText="确认" cancelText="取消">
                   <a href="javascript:void(0)">删除</a>
                 </a-popconfirm>
               </template>
@@ -58,7 +58,7 @@
           <s-table
             ref="saleTable"
             size="default"
-            :rowKey="(recordActive) => recordActive.id"
+            :rowKey="(recordActive) => recordActive.code"
             :columns="columnsSales"
             :data="loadSalesData"
             showPagination="false"
@@ -91,7 +91,7 @@
           <s-table
             ref="errorTable"
             size="default"
-            :rowKey="(recordActive) => recordActive.id"
+            :rowKey="(recordActive) => recordActive.code"
             :columns="columnsSales"
             :data="loadErrorSalesData"
             showPagination="false"
@@ -108,7 +108,9 @@
         </a-col>
       </a-row>
     </a-form>
-    <finance-list ref="financeList"/>
+    <finance-list
+      :add-finance-list="addFinanceList"
+      ref="financeList"/>
   </a-card>
 </template>
 
@@ -300,8 +302,25 @@ export default {
   watch: {
   },
   methods: {
+    addFinanceList (array) {
+      /*      const _checkedFinances = this.checkedFinances
+      array.filter(a => {
+        return !this.hasExist(this.checkedFinances, a)
+      }).forEach(item => {
+        _checkedFinances.push(item)
+      }) */
+      this.checkedFinances = array
+      this.refreshFinance()
+    },
+    hasExist (checkedFinances, a) {
+      if (checkedFinances && checkedFinances.length > 0) {
+        const index = checkedFinances.findIndex(item => item.code === a.code)
+        return index > -1
+      }
+      return false
+    },
     showList () {
-      this.$refs.financeList.show()
+      this.$refs.financeList.show(this.checkedFinances)
     },
     // 删除记录
     handleDelete (id) {
