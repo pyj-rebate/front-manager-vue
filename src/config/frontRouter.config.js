@@ -2,8 +2,8 @@ import {
   BlankLayout
 } from '@/layouts'
 export const frontRouterMap = {
-  path: '/front',
-  name: 'front',
+  path: '/',
+  name: 'index',
   component: BlankLayout,
   meta: {
     title: '核对',
