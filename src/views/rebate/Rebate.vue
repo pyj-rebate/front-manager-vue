@@ -104,7 +104,7 @@
             label=""
             :labelCol="{ span: 4 }"
             :wrapperCol="{ span: 20 }">
-            <a-button type="danger" icon="download" @click="handleErrorExport()">导出错误</a-button>
+            <a-button type="danger" icon="download" :disabled="errorSalesData.length===0" @click="handleErrorExport()">导出错误</a-button>
           </a-form-item>
         </a-col>
       </a-row>
@@ -327,19 +327,82 @@ export default {
      * 导出错误
      */
     handleErrorExport () {
-    // todo
+      exportExcel(this.errorSalesData).then(res => {
+        if (res.code === 10000) {
+          this.$message.info(res.msg)
+        }
+      })
     },
     /**
      * 重置
      */
     reset () {
-      // todo
+      this.form.resetFields()
+      this.recordActive = {}
+      this.checkedFinances = []
+      this.salesData = []
+      this.errorSalesData = []
+      this.selectedRowKeysSales = []
+      this.selectedRowsSales = []
+      this.refreshSales()
+      this.refreshFinance()
+      this.refreshErrorSales()
     },
     /**
      * 开始核对，返回错误数据
      */
     startCheck () {
-
+      const _selectedRowsSales = this.selectedRowsSales
+      const _checkedFinances = this.checkedFinances
+      const _errorSales = []
+      console.log('选中的销售:' + JSON.stringify(_selectedRowsSales))
+      console.log('财务信息:' + JSON.stringify(_selectedRowsSales))
+      _selectedRowsSales.forEach(sale => {
+        const _index = _checkedFinances.findIndex(finance => this.checkOpts(sale, finance))
+        if (_index === -1) {
+          _errorSales.push(sale)
+        }
+      })
+      this.errorSalesData = _errorSales
+      this.refreshErrorSales()
+    },
+    /**
+     *
+     */
+    checkOpts (sale, finance) {
+      const _checkOpt = this.form.getFieldValue('checkOpt')
+      console.log('匹配项：' + JSON.stringify(_checkOpt))
+      if (_checkOpt.findIndex(i => i === 'businessLicenseName') > -1) {
+        if (sale.businessLicenseName !== finance.name) {
+          return false
+        }
+      }
+      if (_checkOpt.findIndex(i => i === 'rebatePayee') > -1) {
+        if (sale.rebatePayee !== finance.payer) {
+          return false
+        }
+      }
+      if (_checkOpt.findIndex(i => i === 'accountInfo') > -1) {
+        if (sale.accountInfo !== finance.paymentAccount) {
+          return false
+        }
+      }
+      if (_checkOpt.findIndex(i => i === 'ticketType') > -1) {
+        if (sale.ticketType !== finance.ticketType) {
+          return false
+        }
+      }
+      if (_checkOpt.findIndex(i => i === 'companyType') > -1) {
+        if (sale.companyType !== finance.clientage) {
+          return false
+        }
+      }
+      if (_checkOpt.findIndex(i => i === 'invoiceFlag') > -1) {
+        if (sale.invoiceFlag !== finance.invoiceFlag) {
+          return false
+        }
+      }
+      return true
     },
     /**
      * 其他页面回写到当前页面财务记录

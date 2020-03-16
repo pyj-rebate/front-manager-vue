@@ -1,20 +1,12 @@
 import path from '@/api/index'
 import { axios, axiosFile } from '@/utils/request'
-import parsePageParams from '@/utils/page'
 
-// 导出excel
+// 导出错误销售表信息
 export function exportExcel (data) {
   return axiosFile({
-    url: path.rebate + '/sale/export',
+    url: path.rebate + '/sale/exportError',
     method: 'POST',
     data: data
-  })
-}
-// 模板下载
-export function template () {
-  return axiosFile({
-    url: path.rebate + '/sale/template',
-    method: 'POST'
   })
 }
 // 导入销售
