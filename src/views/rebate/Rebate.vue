@@ -70,10 +70,11 @@
           <a-form-item
             label="匹配项"
             :labelCol="{ span: 4 }"
-            :wrapperCol="{ span: 8 }">
+            :wrapperCol="{ span: 16 }">
             <a-checkbox-group
-              :options="[{ label: '付款人', value: 1 },{ label: '付款账号', value: 2 },{ label: '往来单位名称', value: 3 }]"
-              v-decorator="['checkOpt',{initialValue: [1]}]"/>
+              style="float: left; margin-left: 16px;line-height: 40px;"
+              :options="optSales"
+              v-decorator="['checkOpt',{initialValue: ['rebatePayee']}]"/>
           </a-form-item>
         </a-col>
         <a-col :span="24" >
@@ -115,7 +116,7 @@
 </template>
 
 <script>
-import { importFinancesExcel, exportExcel } from '@/api/rebate/rebate'
+import { importFinancesExcel, importSalesExcel, exportExcel } from '@/api/rebate/rebate'
 import { STable } from '@/components'
 import FinanceList from '../finance/FinanceList'
 
@@ -280,6 +281,10 @@ export default {
       columns: columFinances,
       // 列表表头
       columnsSales: [{
+        title: '营业执照名称',
+        dataIndex: 'businessLicenseName',
+        key: 'businessLicenseName'
+      }, {
         title: '返利收款人',
         dataIndex: 'rebatePayee',
         key: 'rebatePayee'
@@ -288,15 +293,26 @@ export default {
         dataIndex: 'accountInfo',
         key: 'accountInfo'
       }, {
-        title: '开户行',
-        dataIndex: 'openingBank',
-        key: 'openingBank'
+        title: '票据类型',
+        dataIndex: 'ticketType',
+        key: 'ticketType'
       }, {
-        title: '营业执照名称',
-        dataIndex: 'businessLicenseName',
-        key: 'businessLicenseName'
+        title: '经营者或第三方或本单位',
+        dataIndex: 'companyType',
+        key: 'companyType'
+      }, {
+        title: '是否开票',
+        dataIndex: 'invoiceFlag',
+        key: 'invoiceFlag'
       }
       ]
+    }
+  },
+  computed: {
+    optSales () {
+      return this.columnsSales.map(item => {
+        return { label: item.title, value: item.key }
+      })
     }
   },
   watch: {
@@ -358,6 +374,16 @@ export default {
      * 导入销售表
      */
     handleSaleImport (data) {
+      this.saleLoading = true
+      importSalesExcel(data.file).then(res => {
+        if (res.code === 10000) {
+          this.$message.info(this.createMsg(res.msg))
+          this.salesData = res.result
+          this.refreshSales()
+        }
+      }).finally(() => {
+        this.saleLoading = false
+      })
     },
     /* 创建多行vnode */
     createMsg (messages) {

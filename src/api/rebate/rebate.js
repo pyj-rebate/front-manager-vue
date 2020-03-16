@@ -17,12 +17,12 @@ export function template () {
     method: 'POST'
   })
 }
-// 导入excel
-export function importExcel (file) {
+// 导入销售
+export function importSalesExcel (file) {
   const data = new FormData()
   data.append('file', file)
   return axios({
-    url: path.rebate + '/sale/import',
+    url: path.rebate + '/sale/importSales',
     method: 'POST',
     headers: { 'Content-Type': 'multipart/form-data' },
     timeout: 1800000,
