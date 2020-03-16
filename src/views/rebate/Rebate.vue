@@ -82,7 +82,7 @@
             label=""
             :labelCol="{ span: 4 }"
             :wrapperCol="{ span: 20 }">
-            <a-button type="primary">开始核对</a-button>
+            <a-button type="primary" @click="startCheck">开始核对</a-button>
             <a-button style="margin-left: 16px;" @click="reset">重置</a-button>
           </a-form-item>
         </a-col>
@@ -246,17 +246,19 @@ export default {
   data () {
     return {
       form: this.$form.createForm(this),
-      /* 导入加载状态 */
+      /* 导入财务表加载状态 */
       financeLoading: false,
+      /* 导入销售表加载 */
       saleLoading: false,
       // 单个记录行
       recordActive: {},
+      /* 选择的财务记录 */
       checkedFinances: [],
+      /* 有效的销售记录 */
       salesData: [],
+      /* 错误的销售记录 */
       errorSalesData: [],
       // 选中
-      selectedRowKeys: [],
-      selectedRows: [],
       selectedRowKeysSales: [],
       selectedRowsSales: [],
       loadCheckedFinancesData: parameter => {
@@ -277,9 +279,9 @@ export default {
           resolve(initData)
         })
       },
-      // 列表表头
+      // 财务列表表头
       columns: columFinances,
-      // 列表表头
+      // 销售列表表头
       columnsSales: [{
         title: '营业执照名称',
         dataIndex: 'businessLicenseName',
@@ -309,6 +311,9 @@ export default {
     }
   },
   computed: {
+    /**
+     * 匹配项
+     */
     optSales () {
       return this.columnsSales.map(item => {
         return { label: item.title, value: item.key }
@@ -318,6 +323,28 @@ export default {
   watch: {
   },
   methods: {
+    /**
+     * 导出错误
+     */
+    handleErrorExport () {
+    // todo
+    },
+    /**
+     * 重置
+     */
+    reset () {
+      // todo
+    },
+    /**
+     * 开始核对，返回错误数据
+     */
+    startCheck () {
+
+    },
+    /**
+     * 其他页面回写到当前页面财务记录
+     * @param array
+     */
     addFinanceList (array) {
       /*      const _checkedFinances = this.checkedFinances
       array.filter(a => {
@@ -328,6 +355,9 @@ export default {
       this.checkedFinances = array
       this.refreshFinance()
     },
+    /**
+     * 是否存在财务记录
+     */
     hasExist (checkedFinances, a) {
       if (checkedFinances && checkedFinances.length > 0) {
         const index = checkedFinances.findIndex(item => item.code === a.code)
@@ -335,10 +365,16 @@ export default {
       }
       return false
     },
+    /**
+     * 清空选择
+     */
     clearFinanceAll () {
       this.checkedFinances = []
       this.refreshFinance()
     },
+    /**
+     * 原始表管理页面显示
+     */
     showList () {
       this.$refs.financeList.show(this.checkedFinances)
     },
@@ -349,19 +385,6 @@ export default {
         this.checkedFinances.splice(index, 1)
         this.refreshFinance()
       }
-    },
-    /**
-     * 重置
-     */
-    reset () {
-
-    },
-    /**
-     * 财务选中
-     */
-    onSelectChange (selectedRowKeys, selectedRows) {
-      this.selectedRowKeys = selectedRowKeys
-      this.selectedRows = selectedRows
     },
     /**
      * 销售选中
@@ -408,12 +431,21 @@ export default {
         this.financeLoading = false
       })
     },
+    /**
+     * 刷新财务表
+     */
     refreshFinance () {
       this.$refs.financeTable.refresh()
     },
+    /**
+     * 刷新销售表
+     */
     refreshSales () {
       this.$refs.saleTable.refresh()
     },
+    /**
+     * 刷新错误记录
+     */
     refreshErrorSales () {
       this.$refs.errorTable.refresh()
     },
