@@ -442,6 +442,7 @@ export default {
       this.selectedRowKeys = []
       this.selectedRows = []
     },
+    /* 全选和取消全选 */
     onSelectAll (selected, selectedRows, changeRows) {
       if (selected) {
         changeRows.forEach(item => {
