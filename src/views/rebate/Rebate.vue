@@ -4,7 +4,7 @@
       <a-row :gutter="16" align="middle" style="min-width: 1366px;text-align: center;margin: 0 auto;">
         <a-col :span="24"><h1>销售财务核对</h1></a-col>
         <a-divider dashed />
-        <a-col :span="24">
+        <!--<a-col :span="24">
           <a-form-item
             label="财务表"
             :labelCol="{ span: 4 }"
@@ -17,11 +17,11 @@
             >
               <a-button :icon="financeLoading ? 'loading' : 'upload'" >导入财务表</a-button>
             </a-upload>
-            <a style="margin-left: 16px;float:left;" @click="showList">从原始表选择</a>
-            <a style="margin-left: 16px;float:left;color: red;" @click="clearFinanceAll">清空选择</a>
+            <a style="margin-left: 16px;float:left;" @click="showList">查看财务表</a>
+&lt;!&ndash;            <a style="margin-left: 16px;float:left;color: red;" @click="clearFinanceAll">清空选择</a>&ndash;&gt;
           </a-form-item>
-        </a-col>
-        <a-col :span="24">
+        </a-col>-->
+        <!--<a-col :span="24">
           <s-table
             ref="financeTable"
             size="default"
@@ -38,6 +38,13 @@
               </template>
             </span>
           </s-table>
+        </a-col>-->
+        <a-col :span="24">
+          <finance-list
+            :add-finance-list="addFinanceList"
+            :import-finances-excel="importFinancesExcel"
+            :create-msg="createMsg"
+            ref="financeList"/>
         </a-col>
         <a-col :span="24" style="margin-top: 16px">
           <a-form-item
@@ -64,6 +71,9 @@
             showPagination="false"
             :rowSelection="{ selectedRowKeys: selectedRowKeysSales, onChange: onSelectChangeSales }"
           >
+            <span slot="sequence" slot-scope="text, record, index">
+              {{ index+1 }}
+            </span>
           </s-table>
         </a-col>
         <a-col :span="24" style="margin-top: 16px">
@@ -74,7 +84,7 @@
             <a-checkbox-group
               style="float: left; margin-left: 16px;line-height: 40px;"
               :options="optSales"
-              v-decorator="['checkOpt',{initialValue: ['rebatePayee']}]"/>
+              v-decorator="['checkOpt',{initialValue: ['businessLicenseName']}]"/>
           </a-form-item>
         </a-col>
         <a-col :span="24" >
@@ -82,7 +92,7 @@
             label=""
             :labelCol="{ span: 4 }"
             :wrapperCol="{ span: 20 }">
-            <a-button type="primary" @click="startCheck">开始核对</a-button>
+            <a-button type="primary" :disabled="selectedRowKeysSales.length===0" @click="startCheck">开始核对</a-button>
             <a-button style="margin-left: 16px;" @click="reset">重置</a-button>
           </a-form-item>
         </a-col>
@@ -93,10 +103,31 @@
             ref="errorTable"
             size="default"
             :rowKey="(recordActive) => recordActive.code"
-            :columns="columnsSales"
+            :columns="columnsErrorSales"
             :data="loadErrorSalesData"
             showPagination="false"
           >
+            <span slot="sequence" slot-scope="text, record, index">
+              {{ index+1 }}
+            </span>
+            <span slot="businessLicenseName" slot-scope="text, record, index">
+              <div :class="{errorFlag: record.businessLicenseNameFlag === '0'}">{{ text }}</div>
+            </span>
+            <span slot="rebatePayee" slot-scope="text, record, index">
+              <div :class="{errorFlag: record.rebatePayeeFlag === '0'}">{{ text }}</div>
+            </span>
+            <span slot="accountInfo" slot-scope="text, record, index">
+              <div :class="{errorFlag: record.accountInfoFlag === '0'}">{{ text }}</div>
+            </span>
+            <span slot="ticketType" slot-scope="text, record, index">
+              <div :class="{errorFlag: record.ticketTypeFlag === '0'}">{{ text }}</div>
+            </span>
+            <span slot="companyType" slot-scope="text, record, index">
+              <div :class="{errorFlag: record.companyTypeFlag === '0'}">{{ text }}</div>
+            </span>
+            <span slot="invoiceFlag" slot-scope="text, record, index">
+              <div :class="{errorFlag: record.invoiceFlagFlag === '0'}">{{ text }}</div>
+            </span>
           </s-table>
         </a-col>
         <a-col :span="24" style="margin-top: 16px">
@@ -109,9 +140,7 @@
         </a-col>
       </a-row>
     </a-form>
-    <finance-list
-      :add-finance-list="addFinanceList"
-      ref="financeList"/>
+
   </a-card>
 </template>
 
@@ -240,14 +269,39 @@ const columFinances = [
     scopedSlots: { customRender: 'action' }
   }
 ]
+const opts = [{
+  title: '营业执照名称',
+  dataIndex: 'businessLicenseName',
+  key: 'businessLicenseName'
+}, {
+  title: '返利收款人',
+  dataIndex: 'rebatePayee',
+  key: 'rebatePayee'
+}, {
+  title: '账户信息',
+  dataIndex: 'accountInfo',
+  key: 'accountInfo'
+}, {
+  title: '票据类型',
+  dataIndex: 'ticketType',
+  key: 'ticketType'
+}, {
+  title: '经营者或第三方或本单位',
+  dataIndex: 'companyType',
+  key: 'companyType'
+}, {
+  title: '是否开票',
+  dataIndex: 'invoiceFlag',
+  key: 'invoiceFlag'
+}]
 export default {
   name: 'Rebate',
   components: { STable, FinanceList },
   data () {
     return {
+      importFinancesExcel: importFinancesExcel,
       form: this.$form.createForm(this),
-      /* 导入财务表加载状态 */
-      financeLoading: false,
+
       /* 导入销售表加载 */
       saleLoading: false,
       // 单个记录行
@@ -283,31 +337,47 @@ export default {
       columns: columFinances,
       // 销售列表表头
       columnsSales: [{
+        title: '序列',
+        dataIndex: 'sequence',
+        key: 'sequence',
+        scopedSlots: { customRender: 'sequence' }
+      }, ...opts],
+      columnsErrorSales: [{
+        title: '序列',
+        dataIndex: 'sequence',
+        key: 'sequence',
+        scopedSlots: { customRender: 'sequence' }
+      }, {
         title: '营业执照名称',
         dataIndex: 'businessLicenseName',
-        key: 'businessLicenseName'
+        key: 'businessLicenseName',
+        scopedSlots: { customRender: 'businessLicenseName' }
       }, {
         title: '返利收款人',
         dataIndex: 'rebatePayee',
-        key: 'rebatePayee'
+        key: 'rebatePayee',
+        scopedSlots: { customRender: 'rebatePayee' }
       }, {
         title: '账户信息',
         dataIndex: 'accountInfo',
-        key: 'accountInfo'
+        key: 'accountInfo',
+        scopedSlots: { customRender: 'accountInfo' }
       }, {
         title: '票据类型',
         dataIndex: 'ticketType',
-        key: 'ticketType'
+        key: 'ticketType',
+        scopedSlots: { customRender: 'ticketType' }
       }, {
         title: '经营者或第三方或本单位',
         dataIndex: 'companyType',
-        key: 'companyType'
+        key: 'companyType',
+        scopedSlots: { customRender: 'companyType' }
       }, {
         title: '是否开票',
         dataIndex: 'invoiceFlag',
-        key: 'invoiceFlag'
-      }
-      ]
+        key: 'invoiceFlag',
+        scopedSlots: { customRender: 'invoiceFlag' }
+      }]
     }
   },
   computed: {
@@ -315,8 +385,8 @@ export default {
      * 匹配项
      */
     optSales () {
-      return this.columnsSales.map(item => {
-        return { label: item.title, value: item.key }
+      return opts.map(item => {
+        return { label: item.title, value: item.key, disabled: item.key === 'businessLicenseName' }
       })
     }
   },
@@ -339,31 +409,32 @@ export default {
     reset () {
       this.form.resetFields()
       this.recordActive = {}
-      this.checkedFinances = []
       this.salesData = []
       this.errorSalesData = []
       this.selectedRowKeysSales = []
       this.selectedRowsSales = []
       this.refreshSales()
-      this.refreshFinance()
       this.refreshErrorSales()
     },
     /**
      * 开始核对，返回错误数据
      */
     startCheck () {
+      this.selectedRowsSales.forEach(sale => {
+        sale.businessLicenseNameFlag = '1'
+        sale.rebatePayeeFlag = '1'
+        sale.accountInfoFlag = '1'
+        sale.ticketTypeFlag = '1'
+        sale.companyTypeFlag = '1'
+        sale.invoiceFlagFlag = '1'
+      })
       const _selectedRowsSales = this.selectedRowsSales
       const _checkedFinances = this.checkedFinances
-      const _errorSales = []
-      console.log('选中的销售:' + JSON.stringify(_selectedRowsSales))
-      console.log('财务信息:' + JSON.stringify(_selectedRowsSales))
       _selectedRowsSales.forEach(sale => {
-        const _index = _checkedFinances.findIndex(finance => this.checkOpts(sale, finance))
-        if (_index === -1) {
-          _errorSales.push(sale)
-        }
+        const finance = _checkedFinances.find(i => sale.businessLicenseName === i.name)
+        this.checkOpts(sale, finance)
       })
-      this.errorSalesData = _errorSales
+      this.errorSalesData = _selectedRowsSales
       this.refreshErrorSales()
     },
     /**
@@ -371,38 +442,34 @@ export default {
      */
     checkOpts (sale, finance) {
       const _checkOpt = this.form.getFieldValue('checkOpt')
-      console.log('匹配项：' + JSON.stringify(_checkOpt))
-      if (_checkOpt.findIndex(i => i === 'businessLicenseName') > -1) {
-        if (sale.businessLicenseName !== finance.name) {
-          return false
-        }
+      if (!finance) {
+        sale.businessLicenseNameFlag = '0'
       }
       if (_checkOpt.findIndex(i => i === 'rebatePayee') > -1) {
-        if (sale.rebatePayee !== finance.payer) {
-          return false
+        if (!finance || sale.rebatePayee !== finance.payer) {
+          sale.rebatePayeeFlag = '0'
         }
       }
       if (_checkOpt.findIndex(i => i === 'accountInfo') > -1) {
-        if (sale.accountInfo !== finance.paymentAccount) {
-          return false
+        if (!finance || sale.accountInfo !== finance.paymentAccount) {
+          sale.accountInfoFlag = '0'
         }
       }
       if (_checkOpt.findIndex(i => i === 'ticketType') > -1) {
-        if (sale.ticketType !== finance.ticketType) {
-          return false
+        if (!finance || sale.ticketType !== finance.ticketType) {
+          sale.ticketTypeFlag = '0'
         }
       }
       if (_checkOpt.findIndex(i => i === 'companyType') > -1) {
-        if (sale.companyType !== finance.clientage) {
-          return false
+        if (!finance || sale.companyType !== finance.clientage) {
+          sale.companyTypeFlag = '0'
         }
       }
       if (_checkOpt.findIndex(i => i === 'invoiceFlag') > -1) {
-        if (sale.invoiceFlag !== finance.invoiceFlag) {
-          return false
+        if (!finance || sale.invoiceFlag !== finance.invoiceFlag) {
+          sale.invoiceFlagFlag = '0'
         }
       }
-      return true
     },
     /**
      * 其他页面回写到当前页面财务记录
@@ -416,7 +483,7 @@ export default {
         _checkedFinances.push(item)
       }) */
       this.checkedFinances = array
-      this.refreshFinance()
+      // this.refreshFinance()
     },
     /**
      * 是否存在财务记录
@@ -479,21 +546,7 @@ export default {
       const multiMsg = this.$createElement('p', { style: { textAlign: 'left' } }, msgNodes)
       return multiMsg
     },
-    /**
-     * 导入财务表
-     */
-    handleFinanceImport (data) {
-      this.financeLoading = true
-      importFinancesExcel(data.file).then(res => {
-        if (res.code === 10000) {
-          this.$message.info(this.createMsg(res.msg))
-          this.checkedFinances = res.result
-          this.refreshFinance()
-        }
-      }).finally(() => {
-        this.financeLoading = false
-      })
-    },
+
     /**
      * 刷新财务表
      */
@@ -527,5 +580,7 @@ export default {
 </script>
 
 <style scoped>
-
+  /deep/ .errorFlag{
+    color: red;
+  }
 </style>

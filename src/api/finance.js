@@ -12,7 +12,13 @@ export function queryList (data) {
     params: parsePageParams(data)
   })
 }
-
+export function list () {
+  return axios({
+    url: path.rebate + '/finance/list',
+    data: {},
+    method: 'POST'
+  })
+}
 // 保存
 export function save (data) {
   return axios({
