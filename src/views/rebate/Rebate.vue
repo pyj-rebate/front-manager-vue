@@ -475,7 +475,7 @@ export default {
       if (!value) {
         return ''
       } else {
-        return value.trim
+        return value.trim()
       }
     },
     /**
