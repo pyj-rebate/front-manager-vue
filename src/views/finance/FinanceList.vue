@@ -81,7 +81,7 @@
                 <a-button type="primary" @click="$refs.financeTable.refresh(true)">查询</a-button>
                 <a-button style="margin-left: 16px" @click="restQuery()">重置</a-button>
                 <a-button style="margin-left: 16px" type="primary" icon="plus" @click="handleAdd()">新建</a-button>
-<!--                <a-button style="margin-left: 16px" icon="download" @click="handleExport()">导出</a-button>-->
+                <a-button style="margin-left: 16px" icon="download" @click="handleExport()">导出</a-button>
                 <a-upload
                   name="finance"
                   style="margin-left: 16px;"
