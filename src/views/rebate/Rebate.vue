@@ -431,7 +431,7 @@ export default {
       const _selectedRowsSales = this.selectedRowsSales
       const _checkedFinances = this.checkedFinances
       _selectedRowsSales.forEach(sale => {
-        const finance = _checkedFinances.find(i => sale.businessLicenseName.trim() === i.name.trim())
+        const finance = _checkedFinances.find(i => this.customTrim(sale.businessLicenseName) === this.customTrim(i.name))
         this.checkOpts(sale, finance)
       })
       this.errorSalesData = _selectedRowsSales
@@ -446,12 +446,12 @@ export default {
         sale.businessLicenseNameFlag = '0'
       }
       if (_checkOpt.findIndex(i => i === 'rebatePayee') > -1) {
-        if (!finance || sale.rebatePayee.trim() !== finance.payer.trim()) {
+        if (!finance || this.customTrim(sale.rebatePayee) !== this.customTrim(finance.payer)) {
           sale.rebatePayeeFlag = '0'
         }
       }
       if (_checkOpt.findIndex(i => i === 'accountInfo') > -1) {
-        if (!finance || sale.accountInfo.trim() !== finance.paymentAccount.trim()) {
+        if (!finance || this.customTrim(sale.accountInfo) !== this.customTrim(finance.paymentAccount)) {
           sale.accountInfoFlag = '0'
         }
       }
@@ -461,14 +461,21 @@ export default {
         }
       }
       if (_checkOpt.findIndex(i => i === 'companyType') > -1) {
-        if (!finance || sale.companyType.trim() !== finance.clientage.trim()) {
+        if (!finance || this.customTrim(sale.companyType) !== this.customTrim(finance.clientage)) {
           sale.companyTypeFlag = '0'
         }
       }
       if (_checkOpt.findIndex(i => i === 'invoiceFlag') > -1) {
-        if (!finance || sale.invoiceFlag.trim() !== finance.invoiceFlag.trim()) {
+        if (!finance || this.customTrim(sale.invoiceFlag) !== this.customTrim(finance.invoiceFlag)) {
           sale.invoiceFlagFlag = '0'
         }
+      }
+    },
+    customTrim (value) {
+      if (!value) {
+        return ''
+      } else {
+        return value.trim
       }
     },
     /**
@@ -583,16 +590,16 @@ export default {
      */
     eqTicketType (sale, finance) {
       let result = false
-      if (finance.ticketType === '电票' && sale.ticketType === '普票') {
+      if (this.customTrim(finance.ticketType) === '电票' && this.customTrim(sale.ticketType) === '普票') {
         result = true
       }
-      if (finance.ticketType === '专用发票' && sale.ticketType === '专票') {
+      if (this.customTrim(finance.ticketType) === '专用发票' && this.customTrim(sale.ticketType) === '专票') {
         result = true
       }
-      if (finance.ticketType === '' && sale.ticketType === '不开票') {
+      if (this.customTrim(finance.ticketType) === '' && this.customTrim(sale.ticketType) === '不开票') {
         result = true
       }
-      if (finance.ticketType === sale.ticketType) {
+      if (this.customTrim(finance.ticketType) === this.customTrim(sale.ticketType)) {
         result = true
       }
       return result
