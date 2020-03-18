@@ -581,6 +581,8 @@ export default {
 
 <style scoped>
   /deep/ .errorFlag{
-    color: red;
+    background-color: yellow;
+    width: 100%;
+    min-height: 21px;
   }
 </style>
