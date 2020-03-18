@@ -369,21 +369,7 @@ export default {
       getMoment: getMoment,
       // 列表加载数据方法
       loadData: parameter => {
-        if (this.queryParam.endtimeCondition) {
-          this.queryParam.endtimeSearch = []
-          this.queryParam.endtimeSearch[0] = formatDate(this.queryParam.endtimeCondition[0], 'YYYY-MM-DD')
-          this.queryParam.endtimeSearch[1] = formatDate(this.queryParam.endtimeCondition[1], 'YYYY-MM-DD')
-        }
-        if (this.queryParam.proxyEndCondition) {
-          this.queryParam.proxyEndSearch = []
-          this.queryParam.proxyEndSearch[0] = formatDate(this.queryParam.proxyEndCondition[0], 'YYYY-MM-DD')
-          this.queryParam.proxyEndSearch[1] = formatDate(this.queryParam.proxyEndCondition[1], 'YYYY-MM-DD')
-        }
-        if (this.queryParam.proxyStartCondition) {
-          this.queryParam.proxyStartSearch = []
-          this.queryParam.proxyStartSearch[0] = formatDate(this.queryParam.proxyStartCondition[0], 'YYYY-MM-DD')
-          this.queryParam.proxyStartSearch[1] = formatDate(this.queryParam.proxyStartCondition[1], 'YYYY-MM-DD')
-        }
+        this.setQuery()
         return queryList(Object.assign(parameter, this.queryParam))
           .then(res => {
             if (res.code === 10000) {
@@ -452,10 +438,22 @@ export default {
   },
   computed: {},
   methods: {
-    /**
-     * 导出
-     */
-    handleExport () {
+    setQuery () {
+      if (this.queryParam.code) {
+        this.queryParam.code = this.queryParam.code.trim()
+      }
+      if (this.queryParam.name) {
+        this.queryParam.name = this.queryParam.name.trim()
+      }
+      if (this.queryParam.leader) {
+        this.queryParam.leader = this.queryParam.leader.trim()
+      }
+      if (this.queryParam.payer) {
+        this.queryParam.payer = this.queryParam.payer.trim()
+      }
+      if (this.queryParam.paymentAccount) {
+        this.queryParam.paymentAccount = this.queryParam.paymentAccount.trim()
+      }
       if (this.queryParam.endtimeCondition) {
         this.queryParam.endtimeSearch = []
         this.queryParam.endtimeSearch[0] = formatDate(this.queryParam.endtimeCondition[0], 'YYYY-MM-DD')
@@ -471,6 +469,12 @@ export default {
         this.queryParam.proxyStartSearch[0] = formatDate(this.queryParam.proxyStartCondition[0], 'YYYY-MM-DD')
         this.queryParam.proxyStartSearch[1] = formatDate(this.queryParam.proxyStartCondition[1], 'YYYY-MM-DD')
       }
+    },
+    /**
+     * 导出
+     */
+    handleExport () {
+      this.setQuery()
       exportExcel(this.queryParam).then(res => {
         if (res.code === 10000) {
           this.$message.info(res.msg)
