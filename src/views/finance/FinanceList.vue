@@ -81,6 +81,7 @@
                 <a-button type="primary" @click="$refs.financeTable.refresh(true)">查询</a-button>
                 <a-button style="margin-left: 16px" @click="restQuery()">重置</a-button>
                 <a-button style="margin-left: 16px" type="primary" icon="plus" @click="handleAdd()">新建</a-button>
+<!--                <a-button style="margin-left: 16px" icon="download" @click="handleExport()">导出</a-button>-->
                 <a-upload
                   name="finance"
                   style="margin-left: 16px;"
@@ -193,7 +194,7 @@
 <script>
 
 import { formatDate, getMoment } from '@/utils/common'
-import { checkCode, del, get, getDictByType, queryList, save, update, list } from '@/api/finance'
+import { checkCode, del, get, getDictByType, queryList, save, update, list, exportExcel } from '@/api/finance'
 import { STable } from '@/components'
 import Detail from './components/Detail'
 import Add from './components/Add'
@@ -451,6 +452,31 @@ export default {
   },
   computed: {},
   methods: {
+    /**
+     * 导出
+     */
+    handleExport () {
+      if (this.queryParam.endtimeCondition) {
+        this.queryParam.endtimeSearch = []
+        this.queryParam.endtimeSearch[0] = formatDate(this.queryParam.endtimeCondition[0], 'YYYY-MM-DD')
+        this.queryParam.endtimeSearch[1] = formatDate(this.queryParam.endtimeCondition[1], 'YYYY-MM-DD')
+      }
+      if (this.queryParam.proxyEndCondition) {
+        this.queryParam.proxyEndSearch = []
+        this.queryParam.proxyEndSearch[0] = formatDate(this.queryParam.proxyEndCondition[0], 'YYYY-MM-DD')
+        this.queryParam.proxyEndSearch[1] = formatDate(this.queryParam.proxyEndCondition[1], 'YYYY-MM-DD')
+      }
+      if (this.queryParam.proxyStartCondition) {
+        this.queryParam.proxyStartSearch = []
+        this.queryParam.proxyStartSearch[0] = formatDate(this.queryParam.proxyStartCondition[0], 'YYYY-MM-DD')
+        this.queryParam.proxyStartSearch[1] = formatDate(this.queryParam.proxyStartCondition[1], 'YYYY-MM-DD')
+      }
+      exportExcel(this.queryParam).then(res => {
+        if (res.code === 10000) {
+          this.$message.info(res.msg)
+        }
+      })
+    },
     getFinancesAll () {
       list()
         .then(res => {

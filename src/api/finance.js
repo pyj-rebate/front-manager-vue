@@ -1,6 +1,6 @@
 import path from '@/api/index'
 import {
-  axios
+  axios, axiosFile
 } from '@/utils/request'
 import parsePageParams from '@/utils/page'
 // 分页
@@ -69,5 +69,18 @@ export function checkCode (params) {
     headers: { 'check': true },
     // id=params.id&code=params.code
     params: params
+  })
+}
+
+/**
+ * 导出
+ * @param data
+ * @returns {AxiosPromise}
+ */
+export function exportExcel (data) {
+  return axiosFile({
+    url: path.rebate + '/finance/exportFinance',
+    method: 'POST',
+    data: data
   })
 }
