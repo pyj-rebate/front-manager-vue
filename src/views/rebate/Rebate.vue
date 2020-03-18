@@ -431,7 +431,7 @@ export default {
       const _selectedRowsSales = this.selectedRowsSales
       const _checkedFinances = this.checkedFinances
       _selectedRowsSales.forEach(sale => {
-        const finance = _checkedFinances.find(i => sale.businessLicenseName === i.name)
+        const finance = _checkedFinances.find(i => sale.businessLicenseName.trim() === i.name.trim())
         this.checkOpts(sale, finance)
       })
       this.errorSalesData = _selectedRowsSales
@@ -446,27 +446,27 @@ export default {
         sale.businessLicenseNameFlag = '0'
       }
       if (_checkOpt.findIndex(i => i === 'rebatePayee') > -1) {
-        if (!finance || sale.rebatePayee !== finance.payer) {
+        if (!finance || sale.rebatePayee.trim() !== finance.payer.trim()) {
           sale.rebatePayeeFlag = '0'
         }
       }
       if (_checkOpt.findIndex(i => i === 'accountInfo') > -1) {
-        if (!finance || sale.accountInfo !== finance.paymentAccount) {
+        if (!finance || sale.accountInfo.trim() !== finance.paymentAccount.trim()) {
           sale.accountInfoFlag = '0'
         }
       }
       if (_checkOpt.findIndex(i => i === 'ticketType') > -1) {
-        if (!finance || sale.ticketType !== finance.ticketType) {
+        if (!finance || !this.eqTicketType(sale, finance)) {
           sale.ticketTypeFlag = '0'
         }
       }
       if (_checkOpt.findIndex(i => i === 'companyType') > -1) {
-        if (!finance || sale.companyType !== finance.clientage) {
+        if (!finance || sale.companyType.trim() !== finance.clientage.trim()) {
           sale.companyTypeFlag = '0'
         }
       }
       if (_checkOpt.findIndex(i => i === 'invoiceFlag') > -1) {
-        if (!finance || sale.invoiceFlag !== finance.invoiceFlag) {
+        if (!finance || sale.invoiceFlag.trim() !== finance.invoiceFlag.trim()) {
           sale.invoiceFlagFlag = '0'
         }
       }
@@ -574,6 +574,28 @@ export default {
           this.$message.info(res.msg)
         }
       })
+    },
+    /**
+     * 判断票据类型是否相等
+     * @param sale
+     * @param finance
+     * @returns {boolean}
+     */
+    eqTicketType (sale, finance) {
+      let result = false
+      if (finance.ticketType === '电票' && sale.ticketType === '普票') {
+        result = true
+      }
+      if (finance.ticketType === '专用发票' && sale.ticketType === '专票') {
+        result = true
+      }
+      if (finance.ticketType === '' && sale.ticketType === '不开票') {
+        result = true
+      }
+      if (finance.ticketType === sale.ticketType) {
+        result = true
+      }
+      return result
     }
   }
 }
