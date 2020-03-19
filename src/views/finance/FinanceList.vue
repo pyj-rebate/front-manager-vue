@@ -122,6 +122,9 @@
       <span slot="ticketType" slot-scope="text">
         {{ getTicketTypeName(text) }}
       </span>
+      <span slot="endtime" slot-scope="text">
+        {{ getEndTime(text) }}
+      </span>
       <span slot="action" slot-scope="text, record">
         <template>
           <a @click="handleDetail(record)">详情</a>
@@ -192,7 +195,7 @@
 </template>
 
 <script>
-
+import moment from 'moment'
 import { formatDate, getMoment } from '@/utils/common'
 import { checkCode, del, get, getDictByType, queryList, save, update, list, exportExcel } from '@/api/finance'
 import { STable } from '@/components'
@@ -292,7 +295,8 @@ export default {
         {
           title: '到期日',
           dataIndex: 'endtime',
-          key: 'endtime'
+          key: 'endtime',
+          scopedSlots: { customRender: 'endtime' }
         },
         {
           title: '经营范围是否有',
@@ -438,6 +442,19 @@ export default {
   },
   computed: {},
   methods: {
+    /**
+     * 到期日显示调整
+     */
+    getEndTime (endtime) {
+      if (!endtime) {
+        return ''
+      }
+      if (moment(endtime).isSameOrAfter(moment())) {
+        return endtime
+      } else {
+        return '过期'
+      }
+    },
     setQuery () {
       if (this.queryParam.code) {
         this.queryParam.code = this.queryParam.code.trim()

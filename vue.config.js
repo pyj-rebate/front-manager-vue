@@ -107,6 +107,8 @@ module.exports = {
       '/api/rebate': {
         target: 'http://127.0.0.1:9955',
         changeOrigin: true,
+        proxyTimeout: 10 * 60 * 1000,
+        timeout: 10 * 60 * 1000,
         pathRewrite: { '^/api': '' }
       },
       // demo服务
