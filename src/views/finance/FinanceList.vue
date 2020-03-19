@@ -122,8 +122,11 @@
       <span slot="ticketType" slot-scope="text">
         {{ getTicketTypeName(text) }}
       </span>
-      <span slot="endtime" slot-scope="text">
-        {{ getEndTime(text) }}
+      <span slot="endtime" slot-scope="text, record">
+        <div :class="{expireStyle: record.endtimeExpire&&record.endtimeExpire===1}">{{ text}}</div>
+      </span>
+      <span slot="proxyEnd" slot-scope="text, record">
+        <div :class="{expireStyle: record.proxyEndExpire&&record.proxyEndExpire===1}">{{ text}}</div>
       </span>
       <span slot="action" slot-scope="text, record">
         <template>
@@ -322,7 +325,8 @@ export default {
         {
           title: '委托期限结束',
           dataIndex: 'proxyEnd',
-          key: 'proxyEnd'
+          key: 'proxyEnd',
+          scopedSlots: { customRender: 'proxyEnd' }
         },
         {
           title: '付款账号',
@@ -377,6 +381,16 @@ export default {
         return queryList(Object.assign(parameter, this.queryParam))
           .then(res => {
             if (res.code === 10000) {
+              if (res.result instanceof Array) {
+                res.result.forEach(item => {
+                  this.setExpiretime(item)
+                })
+              }
+              if (res.result.records instanceof Array) {
+                res.result.records.forEach(item => {
+                  this.setExpiretime(item)
+                })
+              }
               return res.result
             }
           })
@@ -445,14 +459,12 @@ export default {
     /**
      * 到期日显示调整
      */
-    getEndTime (endtime) {
-      if (!endtime) {
-        return ''
+    setExpiretime (record) {
+      if (record.endtime && moment(record.endtime).isBefore(moment())) {
+        record.endtimeExpire = 1
       }
-      if (moment(endtime).isSameOrAfter(moment())) {
-        return endtime
-      } else {
-        return '过期'
+      if (record.proxyEnd && moment(record.proxyEnd).isBefore(moment())) {
+        record.proxyEndExpire = 1
       }
     },
     setQuery () {
@@ -673,5 +685,8 @@ export default {
       width: 150px !important;
     }
 
+  }
+  .expireStyle{
+    color: red;
   }
 </style>
