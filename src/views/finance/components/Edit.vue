@@ -97,7 +97,7 @@
             :labelCol="{ span: 8 }"
             :wrapperCol="{ span: 16 }">
             <a-date-picker
-              v-decorator="['endtime',{initialValue: getMoment(record.endtime,'YYYY-MM-DD')}]"
+              v-decorator="['endtime',{initialValue: record.endtime?getMoment(record.endtime,'YYYY-MM-DD'):undefined}]"
               placeholder="请选择到期日"/>
           </a-form-item>
         </a-col>
