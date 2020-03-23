@@ -8,7 +8,7 @@
     </div>-->
     <div class="copyright">
       Copyright
-      <a-icon type="copyright" /> 2019 <span>辛普科技</span>
+      <a-icon type="copyright" /> 2020 <span>千家万铺</span>
     </div>
   </div>
 </template>

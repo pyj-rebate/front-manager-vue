@@ -9,7 +9,7 @@ function resolve (dir) {
 
 // vue.config.js
 module.exports = {
-  publicPath: '/admin/',
+  publicPath: '/',
   configureWebpack: {
     plugins: [
       // Ignore all locale files of moment.js
@@ -101,6 +101,14 @@ module.exports = {
       '/api/createFile': {
         target: 'http://localhost:9228',
         changeOrigin: true,
+        pathRewrite: { '^/api': '' }
+      },
+      // rebate服务
+      '/api/rebate': {
+        target: 'http://127.0.0.1:9955',
+        changeOrigin: true,
+        proxyTimeout: 10 * 60 * 1000,
+        timeout: 10 * 60 * 1000,
         pathRewrite: { '^/api': '' }
       },
       // demo服务

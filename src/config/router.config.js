@@ -1,6 +1,7 @@
 import { UserLayout, BasicLayout, RouteView, BlankLayout, PageView } from '@/layouts'
 /* import { bxAnaalyse } from '@/core/icons' */
 import { dynRouterMap } from './dynRouter.config'
+import { frontRouterMap } from './frontRouter.config'
 
 export const asyncRouterMap = dynRouterMap
 
@@ -8,7 +9,7 @@ export const asyncRouterMap = dynRouterMap
  * 基础路由
  * @type { *[] }
  */
-export const constantRouterMap = [
+export const constantRouterMap = [frontRouterMap,
   {
     path: '/user',
     component: UserLayout,

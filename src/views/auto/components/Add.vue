@@ -174,6 +174,7 @@
           :columns="columns"
           :data="loadData"
           :showPagination="false"
+          style="margin-bottom: 64px"
         >
           <span slot="columnName" slot-scope="text, recordChildren">
             <a-input
