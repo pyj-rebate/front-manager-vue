@@ -65,7 +65,9 @@ export function isEmpty (o) {
     case 'number':
       return false
     case 'object':
-      if (typeof (o.length) === 'undefined') {
+      if (o === null) {
+        return true
+      } else if (typeof (o.length) === 'undefined') {
         return false
       } else {
         return Object.keys(o).length === 0

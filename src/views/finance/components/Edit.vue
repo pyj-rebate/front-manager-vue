@@ -139,7 +139,7 @@
             :labelCol="{ span: 8 }"
             :wrapperCol="{ span: 16 }">
             <a-date-picker
-              v-decorator="['proxyStart',{initialValue: getMoment(record.proxyStart,'YYYY-MM-DD')}]"
+              v-decorator="['proxyStart',{initialValue: record.proxyStart?getMoment(record.proxyStart,'YYYY-MM-DD'):undefined}]"
               placeholder="请选择委托期限开始"/>
           </a-form-item>
         </a-col>
@@ -149,7 +149,7 @@
             :labelCol="{ span: 8 }"
             :wrapperCol="{ span: 16 }">
             <a-date-picker
-              v-decorator="['proxyEnd',{initialValue: getMoment(record.proxyEnd,'YYYY-MM-DD')}]"
+              v-decorator="['proxyEnd',{initialValue: record.proxyEnd?getMoment(record.proxyEnd,'YYYY-MM-DD'):undefined}]"
               placeholder="请选择委托期限结束"/>
           </a-form-item>
         </a-col>
